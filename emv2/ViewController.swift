@@ -13,9 +13,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var latitude: Double?
     var longitude: Double?
     var altitude: Double?
-    var lat: String?
-    var lon: String?
-    var distance: Double?
     let locationManager = CLLocationManager()
     @IBOutlet weak var myLatitude: UITextField!
     @IBOutlet weak var myLongitude: UITextField!
@@ -80,7 +77,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     var evLocDidRefresh = false
     
-    @objc func fetchURL() {
+    func fetchURL() {
         var data = "00 A 0.0 0.0"
         if let url = URL(string: "https://roen.us/wapps/dev/evn/evn.txt") {
             do {
@@ -89,7 +86,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 let allEvData = data.components(separatedBy: " ")
                 evLatitude.text = allEvData[2]
                 evLongitude.text = allEvData[3]
-                evDistance.text = "33"
+                let evlatNum = Double(evLatitude.text ?? "") ?? 0.0
+                let evlonNum = Double(evLongitude.text ?? "") ?? 0.0
+                let mylatNum = Double(myLatitude.text ?? "") ?? 0.0
+                let mylonNum = Double(myLongitude.text ?? "") ?? 0.0
+                let dlat: Double = mylatNum - evlatNum
+                let dlon: Double = (mylonNum - evlonNum) * 0.931
+                let distance: Double = sqrt(dlat * dlat + dlon * dlon) * 111325.0
+                evDistance.text = String(distance)
+                //evDistance.text = "33"
                 evLocDidRefresh = true
             } catch {
                 // error loading
