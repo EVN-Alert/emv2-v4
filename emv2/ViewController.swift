@@ -93,7 +93,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 let dlat: Double = mylatNum - evlatNum
                 let dlon: Double = (mylonNum - evlonNum) * 0.931
                 let distance: Double = sqrt(dlat * dlat + dlon * dlon) * 111325.0
-                evDistance.text = String(distance)
+                let idistance = Int32(distance)
+                evDistance.text = String(idistance)
                 //evDistance.text = "33"
                 evLocDidRefresh = true
             } catch {
