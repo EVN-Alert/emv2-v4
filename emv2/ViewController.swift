@@ -22,7 +22,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var TARView: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
-        setTARStatusFalse()
         TARView.text = String("disabled")
         locationManager.delegate  = self
         locationManager.requestWhenInUseAuthorization()
@@ -31,24 +30,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Do any additional setup after loading the view, typically from a nib.
 }
     
-    func setTARViewStatusTrue() {
-        TARView.text = String("enabled")
-    }
-    
-    var TARStatus = false
-    
-    func setTARStatusFalse() {
-        // Set TAR to false
-        TARStatus = false
-        print("TAR Status set to false")
-    }
-    
-    func setTARStatusTrue() {
-        // Set TAR to true
-        TARStatus = true
-        print("TAR Status set to true")
-    }
-
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
             print("GPS allowed.")
@@ -123,45 +104,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    @IBAction func TAR(_ sender: Any) {
-        if TARStatus == false {
-            setTARStatusTrue()
-            refreshEvArStatus()
-        }
-    }
-    
-    
-    var evArLoop = false
-    
-    func refreshEvArStatus() {
-        if TARStatus == false {
-            evArLoop = false
-            startEvAr()
-            // EVAR will only start when the variable is set to true
-            // EVAR will stop when the startEvAr is called and evArLoop is set to false because whenever the function is called, it checks the status of the variable.
-            // refreshEvArStatus just sets the conditions for startEvAr to run, and ensures variables are not mixed. This function is not necessary but will help with eliminating crossreferencing variables merging.
-        } else {
-            evArLoop = true
-            startEvAr()
-            // EVAR will start because the variable is true AND the function to check the status of it and do appropriate actions is called.
-        }
-    }
-
-    
-    func startEvAr() {
-        setTARViewStatusTrue()
-        var rR = 0
-        while evArLoop == true {
-            fetchURL()
+    @IBAction func autoEVR(_ sender: UIButton) {
+        var index = 10
+        while index >= 0 {
+            index -= 1
+            print("Here is the index ", index)
+            evLoad()
+            print("Refresh queued")
+            sleep(1)
             if evLocDidRefresh == true {
-                print("EVAR success!")
-                // Private variable
-                rR = rR + 1
-                print(rR)
+                print("Refreshed from source")
+                evLocDidRefresh = false
+            } else {
+                print("There was an error refreshing EVInfo from source. Please try again!")
             }
-            sleep(6)
+            sleep(3)
         }
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
